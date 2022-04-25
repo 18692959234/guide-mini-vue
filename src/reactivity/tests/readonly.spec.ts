@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, test } from "vitest"
-import { readonly, isReadonly, isProxy } from '../reactive'
+import { readonly, isReadonly, isProxy, reactive, shallowReadonly } from '../reactive'
 
 describe('happy path', () => {
   it('readonly', () => {
@@ -35,5 +35,24 @@ describe('happy path', () => {
     expect(isReadonly(observed.nested)).toBe(true)
     expect(isReadonly(observed.array)).toBe(true)
     expect(isReadonly(observed.array[0])).toBe(true)
+  })
+
+  test('shallowReadonly', () => {
+    console.warn = vi.fn();
+    const userInfo = {
+      age: 18
+    }
+    const zhangsan = shallowReadonly({
+      userInfo,
+      habit: 'play basketball'
+    })
+
+    zhangsan.habit = 'eat'
+    
+    expect(console.warn).toHaveBeenCalledTimes(1)
+
+    zhangsan.userInfo.age = 20;
+    expect(console.warn).toHaveBeenCalledTimes(1);
+    expect(zhangsan.userInfo.age).toBe(20);
   })
 })

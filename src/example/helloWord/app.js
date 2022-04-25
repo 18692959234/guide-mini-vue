@@ -1,13 +1,21 @@
-import { h } from '../../../lib/a.esm.js'
+import { h } from '../../../lib/guide-mini-vue.esm.js'
+import { Foo } from './foo.js';
 export const App = {
-  render () {
+  name: 'App',
+  render() {
     window.self = this;
-    return h('div',{ class: 'hello' }, [
+    return h('div', {
+      class: 'hello',
+      onClick() { console.log('onClick') }, onMouseDown() {
+        console.log('onmousedown')
+      }
+    }, [
       h('p', { id: 'p' }, this.name),
-      h('span', {}, '我是sapan')
+      h('span', {}, '我是sapan'),
+      h(Foo, {fooText: 123})
     ])
   },
-  setup () {
+  setup() {
     return {
       name: 'hb'
     }

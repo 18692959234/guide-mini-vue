@@ -29,10 +29,17 @@ function mountElement (vnode, container) {
   } else if (shapeFlag & ShapeFlags.TEXT_CHILDREN) {
     el.innerText = children;
   }
-
+  
+  const isOn = (key) => /^on[A-Z]/.test(key)
   // props
   Object.keys(props).forEach(key => {
-    el.setAttribute(key, props[key])
+    const val = props[key];
+    if (isOn(key)) {
+      const event = key.slice(2).toLowerCase();
+      el.addEventListener(event, props[key]);
+    } else {
+      el.setAttribute(key, val)
+    }
   })
 
 

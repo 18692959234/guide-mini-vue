@@ -10,7 +10,6 @@ export function createVNode (type, props?, children?) {
     shapeFlag: getShapeFlag(type),
   }
 
-  // 这里设置shapeFlag 是为了 在处理children的时候方便 判断类型
   if (isString(children)) {
     vnode.shapeFlag |= ShapeFlags.TEXT_CHILDREN;
   } else if (Array.isArray(children)) {
