@@ -6,7 +6,9 @@ export function h (type, props?, children?) {
     return createVNode(type, props, children)
 }
 
-export { renderSlots } from './helpers/renderSlots'
+export { renderSlots } from './helpers/renderSlots';
+
+export { createTextVNode } from './vnode'
 
 // 流程
 // 调用createApp初始化 返回一个对象

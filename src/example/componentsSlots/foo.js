@@ -5,6 +5,6 @@ export const Foo = {
   },
   render () {
     const age = 'heihei';
-    return h('div', {}, [renderSlots(this.$slots, 'default'), h('div', {}, '测试插槽'), renderSlots(this.$slots, 'bottom', {age})])
+    return h('div', {aaa: 333,}, [renderSlots(this.$slots, 'default'), h('div', {}, '测试插槽'), renderSlots(this.$slots, 'bottom', {age})])
   }
 }
