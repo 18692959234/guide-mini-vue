@@ -6,6 +6,8 @@ export function h (type, props?, children?) {
     return createVNode(type, props, children)
 }
 
+export { renderSlots } from './helpers/renderSlots'
+
 // 流程
 // 调用createApp初始化 返回一个对象
 // 执行mount方法
