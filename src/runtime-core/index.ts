@@ -12,6 +12,8 @@ export { createTextVNode } from './vnode';
 
 export { getCurrentInstance } from './components'
 
+export { provide, inject } from './apiInject'
+
 // 流程
 // 调用createApp初始化 返回一个对象
 // 执行mount方法
