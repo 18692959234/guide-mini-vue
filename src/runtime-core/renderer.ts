@@ -1,3 +1,5 @@
+import { effect } from "../reactivity/effect";
+import { clog } from "../shared";
 import { ShapeFlags } from "../shared/ShapeFlags";
 import { createComponentInstance, setupComponent } from "./components"
 import { createAppApi } from "./createApp";
@@ -8,41 +10,52 @@ export function createRenderer(options) {
   const { createElement, patchProp, insert } = options;
 
   function render(vnode, container) {
-    patch(vnode, container, null)
+    patch(null, vnode, container, null)
   }
 
-  function patch(vnode, container, parentComponent) {
-    const { type, shapeFlag } = vnode;
+  function patch(n1, n2, container, parentComponent) {
+    const { type, shapeFlag } = n2;
 
     switch (type) {
       case Fragment:
-        processFragment(vnode, container, parentComponent);
+        processFragment(n1, n2, container, parentComponent);
         break;
       case Text:
-        processText(vnode, container);
+        processText(n1, n2, container);
         break;
       default:
         if (shapeFlag & ShapeFlags.ELEMENT) {
-          processElement(vnode, container, parentComponent)
+          processElement(n1, n2, container, parentComponent)
         } else if (shapeFlag & ShapeFlags.STATEFUL_COMPONENT) {
-          processComponent(vnode, container, parentComponent)
+          processComponent(n1, n2, container, parentComponent)
         }
         break;
     }
   }
 
-  function processFragment(vnode, container, parentComponent) {
-    mountChildren(vnode, container, parentComponent);
+  function processFragment(n1, n2, container, parentComponent) {
+    mountChildren(n2, container, parentComponent);
   }
 
-  function processText(vnode: any, container: any) {
-    const text = vnode.children;
-    const textNode = (vnode.el = document.createTextNode(text));
+  function processText(n1, n2: any, container: any) {
+    const text = n2.children;
+    const textNode = (n2.el = document.createTextNode(text));
     container.append(textNode);
   }
 
-  function processElement(vnode, container, parentComponent) {
-    mountElement(vnode, container, parentComponent)
+  function processElement(n1, n2, container, parentComponent) {
+    if (!n1) {
+      mountElement(n2, container, parentComponent)
+    } else {
+      patchElement(n1, n2, container, parentComponent)
+    }
+  }
+
+  function patchElement (n1, n2, container, parentComponent) {
+
+    clog('patchElement')
+    clog('n1:', n1)
+    clog('n2:', n2)
   }
 
   function mountElement(vnode, container, parentComponent) {
@@ -69,12 +82,12 @@ export function createRenderer(options) {
 
   function mountChildren(vnode, container, parentComponent) {
     vnode.children.forEach(ele => {
-      patch(ele, container, parentComponent);
+      patch(null, ele, container, parentComponent);
     })
   }
 
-  function processComponent(vnode: any, container: any, parentComponent) {
-    mountComponent(vnode, container, parentComponent)
+  function processComponent(n1, n2: any, container: any, parentComponent) {
+    mountComponent(n2, container, parentComponent)
   }
   function mountComponent(initialVNode: any, container, parentComponent) {
     // 创建组件实例
@@ -86,10 +99,26 @@ export function createRenderer(options) {
   }
 
   function setupRenderEffect(instance, initialVNode, container) {
-    const { proxy } = instance;
-    const subTree = instance.render.call(proxy);
-    patch(subTree, container, instance);
-    initialVNode.el = subTree.el;
+    
+
+    effect(() => {
+      if (!instance.isMounted) {
+        clog('init')
+        const { proxy } = instance; 
+        const subTree = (instance.subTree = instance.render.call(proxy));
+        patch(null, subTree, container, instance);
+        initialVNode.el = subTree.el;
+        instance.isMounted = true;
+      } else {
+        clog('data changes update the view')
+        const { proxy } = instance; 
+        const subTree = instance.render.call(proxy);
+        const prevSubTree = instance.subTree;
+        instance.subTree = subTree;
+        patch(prevSubTree, subTree, container, instance);
+      }
+
+    })
   }
 
   return {
