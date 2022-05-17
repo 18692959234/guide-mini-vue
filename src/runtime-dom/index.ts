@@ -4,13 +4,19 @@ function createElement (type) {
   return document.createElement(type);
 }
 
-function patchProp (el, key, val) {
+function patchProp (el, key, prevValue, nextValue) {
     const isOn = (key) => /^on[A-Z]/.test(key)
+    console.log(prevValue, nextValue)
     if (isOn(key)) {
       const event = key.slice(2).toLowerCase();
-      el.addEventListener(event, val);
+      el.addEventListener(event, nextValue);
     } else {
-      el.setAttribute(key, val)
+      console.log(nextValue != null)
+      if (nextValue != null) {
+        el.setAttribute(key, nextValue)
+      } else {
+        el.removeAttribute(key);
+      }
     }
 }
 
