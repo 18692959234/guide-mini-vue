@@ -1,4 +1,4 @@
-import { h } from '../../../lib/guide-mini-vue.esm.js'
+import { h } from '../../lib/guide-mini-vue.esm.js'
 import { Foo } from './foo.js';
 export const App = {
   name: 'App',
@@ -6,17 +6,13 @@ export const App = {
     window.self = this;
     return h('div', {
       class: 'hello',
+      onClick() { console.log('onClick') }, onMouseDown() {
+        console.log('onmousedown')
+      }
     }, [
       h('p', { id: 'p' }, this.name),
       h('span', {}, '我是sapan'),
-      h(Foo, {
-        onAdd () {
-          console.log('123')
-        },
-        onEventChannel (...args) {
-          console.log('eventChannel被触发了', args, arguments)
-        }
-      })
+      h(Foo, {fooText: 123})
     ])
   },
   setup() {
