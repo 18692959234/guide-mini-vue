@@ -6,12 +6,10 @@ function createElement (type) {
 
 function patchProp (el, key, prevValue, nextValue) {
     const isOn = (key) => /^on[A-Z]/.test(key)
-    console.log(prevValue, nextValue)
     if (isOn(key)) {
       const event = key.slice(2).toLowerCase();
       el.addEventListener(event, nextValue);
     } else {
-      console.log(nextValue != null)
       if (nextValue != null) {
         el.setAttribute(key, nextValue)
       } else {
@@ -20,8 +18,8 @@ function patchProp (el, key, prevValue, nextValue) {
     }
 }
 
-function insert (el, parent) {
-  parent.append(el);
+function insert (child, parent, anchor) {
+  parent.insertBefore(child, anchor || null);
 }
 
 function remove (el) {
