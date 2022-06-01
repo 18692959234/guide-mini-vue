@@ -8,7 +8,9 @@ export { getCurrentInstance } from './components'
 
 export { provide, inject } from './apiInject';
 
-export { createRenderer } from './renderer'
+export { createRenderer } from './renderer';
+
+export { nextTick } from './scheduler'
 
 // 流程
 // 调用createApp初始化 返回一个对象
