@@ -29,6 +29,7 @@ function parseChildren (context, ancestors) {
     if (!node) {
       node = parseText(context);
     }
+    nodes.push(node)
   }
 
   return nodes;
