@@ -1,21 +1,34 @@
+import { NodeTypes } from "./ast";
+import { helperMapName, TO_DISPLAY_STRING } from "./runtimeHelpers";
+
 export function generate(ast) {
   const context = createCodegenContext();
   const { push } = context;
-  push('return ');
-  
+  genFunctionPreamble(context, ast);
   const functionName = 'render';
   const args = ['_ctx', '_cache'];
   const signature = args.join(', ');
   push(`function ${functionName} (${signature}) {`);
-  genNode(ast, context);
+  push("return ");
+  genNode(ast.codegenNode, context);
   push(`}`);
   return {code: context.code};
 }
 
-function genNode (ast, context) {
-  const node = ast.codegenNode;
-  context.push(`return '${node.content}'`);
-  return context.code;
+function genNode (node, context) {
+  switch (node.type) {
+    case NodeTypes.TEXT:
+      genText(node, context);
+      break;
+    case NodeTypes.INTERPOLATION:
+      genInterpolation(node, context);
+      break;
+    case NodeTypes.SIMPLE_EXPRESSION:
+      genExpression(node, context);
+      break; 
+    default:
+      break;
+  }
 }
 
 function createCodegenContext () {
@@ -23,7 +36,40 @@ function createCodegenContext () {
     code: '',
     push (source) {
       context.code += source;
-    }
+    },
+    helper(key) {
+      return `_${helperMapName[key]}`;
+    },
   }
   return context;
 }
+
+function genFunctionPreamble(context, ast) {
+  const {push} = context;
+  const helpers = ast.helpers;
+  if (helpers.length > 0) {
+    const VueBinging = 'vue';
+    const aliasHelper = (s) => `${helperMapName[s]}:_${helperMapName[s]}`;
+    push(`const { ${ast.helpers.map(aliasHelper).join(", ")} } = ${VueBinging}`);
+  }
+  push('\n')
+  push(`return `)
+}
+
+function genText(node: any, context: any) {
+  const {push} = context;
+  push(`return '${node.content}'`);
+}
+
+function genInterpolation(node: any, context: any) {
+  const {push, helper} = context;
+  push(`${helper(TO_DISPLAY_STRING)}(`);
+  genNode(node.content,context)
+  push(`)`)
+}
+
+function genExpression(node: any, context: any) {
+  const { push } = context;
+  push(node.content)
+}
+
