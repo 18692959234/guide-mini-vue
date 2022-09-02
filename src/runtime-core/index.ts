@@ -2,15 +2,19 @@ export { h } from './h'
 
 export { renderSlots } from './helpers/renderSlots';
 
-export { createTextVNode } from './vnode';
+export { createTextVNode, createElementVNode  } from './vnode';
 
-export { getCurrentInstance } from './components'
+export { getCurrentInstance, registerRuntimeCompiler } from './components'
 
 export { provide, inject } from './apiInject';
 
 export { createRenderer } from './renderer';
 
-export { nextTick } from './scheduler'
+export { nextTick } from './scheduler';
+
+export { toDisplayString } from '../shared'
+
+export * from '../reactivity';
 
 // 流程
 // 调用createApp初始化 返回一个对象

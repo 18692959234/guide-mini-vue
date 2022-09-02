@@ -55,7 +55,7 @@ function genFunctionPreamble(context, ast) {
   const {push} = context;
   const helpers = ast.helpers;
   if (helpers.length > 0) {
-    const VueBinging = 'vue';
+    const VueBinging = 'Vue';
     const aliasHelper = (s) => `${helperMapName[s]}:_${helperMapName[s]}`;
     push(`const { ${ast.helpers.map(aliasHelper).join(", ")} } = ${VueBinging}`);
   }

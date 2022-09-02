@@ -297,10 +297,10 @@ export function createRenderer(options) {
 
 
     // props
-    Object.keys(props).forEach(key => {
+    for (const key in props) {
       const val = props[key];
       hostPatchProps(el, key, null, val);
-    })
+    }
 
     hostInsert(el, container, anchor);
   }
@@ -352,7 +352,7 @@ export function createRenderer(options) {
       if (!instance.isMounted) {
         clog('init')
         const { proxy } = instance;
-        const subTree = (instance.subTree = instance.render.call(proxy));
+        const subTree = (instance.subTree = instance.render.call(proxy, proxy));
         patch(null, subTree, container, instance, anchor);
         initialVNode.el = subTree.el;
         instance.isMounted = true;
@@ -367,7 +367,7 @@ export function createRenderer(options) {
 
         clog('data changes update the view')
         const { proxy } = instance;
-        const subTree = instance.render.call(proxy);
+        const subTree = instance.render.call(proxy, proxy);
         const prevSubTree = instance.subTree;
         instance.subTree = subTree;
         patch(prevSubTree, subTree, container, instance, anchor);
