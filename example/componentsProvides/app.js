@@ -6,6 +6,7 @@ const Provider = {
   setup() {
     provide("foo", "fooVal");
     provide("bar", "barVal");
+    console.log('Provider', getCurrentInstance())
   },
   render() {
     return h("div", {}, [h("p", {}, "Provider"), h(ProviderTwo)]);
@@ -17,7 +18,7 @@ const ProviderTwo = {
   setup() {
     provide("foo", "fooTwo");
     const foo = inject("foo");
-
+    console.log('ProviderTwo', getCurrentInstance())
     return {
       foo,
     };
@@ -37,7 +38,7 @@ const Consumer = {
     const bar = inject("bar");
     // const baz = inject("baz", "bazDefault");
     const baz = inject("baz", () => "bazDefault");
-    console.log(getCurrentInstance())
+    console.log('consumer', getCurrentInstance())
     return {
       foo,
       bar,
