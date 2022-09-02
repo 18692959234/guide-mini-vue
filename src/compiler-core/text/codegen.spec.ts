@@ -6,25 +6,25 @@ import { transformElement } from '../src/transform/transformElement';
 import { transformExpression } from '../src/transform/transformExpression';
 import { transformText } from '../src/transform/transformText';
 
-// describe('codegen string', () => {
-//   it('string', () => {
-//     const ast = baseParse('hi');
-//     transform(ast);
-//     const { code } = generate(ast);
-//     expect(code).toMatchSnapshot();
-//   })
-// })
+describe('codegen string', () => {
+  it('string', () => {
+    const ast = baseParse('hi');
+    transform(ast);
+    const { code } = generate(ast);
+    expect(code).toMatchSnapshot();
+  })
+})
 
-// describe('codegen interpolation', () => {
-//   it('interpolation', () => {
-//     const ast = baseParse('{{message}}');
-//     transform(ast, {
-//       nodeTransforms: [transformExpression]
-//     });
-//     const { code } = generate(ast);
-//     expect(code).toMatchSnapshot();
-//   })
-// })
+describe('codegen interpolation', () => {
+  it('interpolation', () => {
+    const ast = baseParse('{{message}}');
+    transform(ast, {
+      nodeTransforms: [transformExpression]
+    });
+    const { code } = generate(ast);
+    expect(code).toMatchSnapshot();
+  })
+})
 
 describe('codegen element', () => {
   it('element', () => {
