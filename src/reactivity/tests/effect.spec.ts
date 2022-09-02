@@ -57,7 +57,7 @@ describe('effect', () => {
     expect(scheduler).not.toHaveBeenCalled()
     expect(dummy).toBe(1)
     // should be called on first trigger
-    obj.foo++
+    obj.foo++;
     expect(scheduler).toHaveBeenCalledTimes(1)
     // should not run yet
     expect(dummy).toBe(1)
@@ -100,4 +100,34 @@ describe('effect', () => {
     expect(onStop).toHaveBeenCalled()
   })
 
+
+})
+
+describe('循环引用', () => {
+  it('循环1', () => {
+    const name = reactive({ a: 1, b: 2 });
+    const fn = vi.fn(() => {
+      name.a = (name.b++);
+    })
+    effect(fn);
+    expect(fn).toHaveBeenCalledTimes(1)
+  })
+
+  it('测试vue的用例', () => {
+      let hasDummy, getDummy
+      const obj = reactive({ prop: 'value' })
+  
+      const getSpy = vi.fn(() => (getDummy = obj.prop))
+      const hasSpy = vi.fn(() => (hasDummy = 'prop' in obj))
+      effect(getSpy)
+      effect(hasSpy)
+  
+      expect(getDummy).toBe('value')
+      expect(hasDummy).toBe(true)
+      obj.prop = 'value'
+      expect(getSpy).toHaveBeenCalledTimes(1)
+      expect(hasSpy).toHaveBeenCalledTimes(1)
+      expect(getDummy).toBe('value')
+      expect(hasDummy).toBe(true)
+  })
 })

@@ -18,6 +18,7 @@ export class ReactiveEffect {
     activeEffect = this;
     const result = this._fn();
     shouldTrack = false;
+    activeEffect = undefined;
     return result;
   }
 
@@ -73,18 +74,20 @@ export function isTracking () {
 
 export function trigger (target, key) {
   const depsMap = targetMap.get(target);
-  const deps = depsMap.get(key);
+  const deps = depsMap.get(key) || [];
   triggerEffect(deps);
 }
 
 export function triggerEffect (deps) {
-  deps.forEach(dep => {
-    if (dep.scheduler) {
-      dep.scheduler();
-    } else {
-      dep.run();
+  for (const effect of deps) {
+    if (effect !== activeEffect) {
+      if (effect.scheduler) {
+        effect.scheduler();
+      } else {
+        effect.run();
+      }
     }
-  });
+  }
 }
 
 export function stop (runner) {

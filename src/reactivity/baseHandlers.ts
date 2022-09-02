@@ -34,6 +34,7 @@ export function createGetter (isReadonly = false, shallow = false) {
 
 export function createSetter () {
   return function set(target, key, value) {
+    if (value === Reflect.get(target, key)) return value;
     const result = Reflect.set(target, key, value);
     trigger(target, key);
     return result;
